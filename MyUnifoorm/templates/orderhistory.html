@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        header {
+            background-color: #6d0505;
+            color: #fff;
+            padding: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 30px;
+            font-weight: 600;
+            margin-left: 2%;
+        }
+        nav {
+            margin-left: auto;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        nav li {
+            margin-right: 20px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            padding: 5px 0;
+        }
+        nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ccc;
+            transition: width .3s;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        nav a:hover::after {
+            width: 100%;
+            background-color: #ccc;
+        }
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .order-container {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .order-container p {
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        form {
+            margin-top: 10px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cancel-button {
+            background-color: #f44336;
+            color: #fff;
+        }
+        .cancel-button:hover {
+            background-color: #d32f2f;
+        }
+        .update-button {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        .update-button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <p>MyUniform.com</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/MyUnifoorm/">HOME</a></li>
+                <li><a href="/MyUnifoorm/product/">PRODUCT</a></li>
+            </ul>
+        </nav>
+    </header>  
+    <main>
+        <h1>My Orders</h1>
+        {% for order in orders %}
+        <div class="order-container">
+            <p>Name: {{ order.Email.Name }}</p>
+            <p>Order ID: {{ order.OrderID }}</p>
+            <p>Product Name: {{ order.ProductID.ProductName }}</p>
+            <p>Product Quantity: {{ order.Qty }}</p>
+            <p>Order Date: {{ order.OrderDate }}</p>
+            <p>Order Status: {{ order.OrderStatus }}</p>
+            <p>Shipping Address {{order.Email.Address}}</p>
+            <p>Total Amount: RM {{ order.TotalAmount|floatformat:2 }}</p>
+            <form action="{% url 'delete_order' order.OrderID %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="cancel-button">Cancel Order</button>
+            </form>
+            <form action="{% url 'update_order' order.OrderID %}" method="get">
+                <button type="submit" class="update-button">Update Order</button>
+            </form>
+        </div>
+        {% empty %}
+        <p>No orders found.</p>
+        {% endfor %}
+    </main>
+</body>
+</html>

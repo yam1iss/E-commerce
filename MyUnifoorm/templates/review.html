@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+                body {
+            margin: 0;
+            padding: 0;
+
+        }
+        header {
+            background-color: #6d0505;
+            color: #fff;
+            padding: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
+            position: sticky; /* Make header sticky */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure it stays on top */
+        }
+
+        .logo {
+            font-size: 30px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 600;
+            margin-left: 2%;
+        }
+
+        nav {
+            margin-left: auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav li {
+            margin-right: 20px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 600;
+            position: relative;
+            padding: 5px 0; /* Added padding for better click area */
+        }
+
+        nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ccc;
+            transition: width .3s;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        nav a:hover::after {
+            width: 100%; /* Animate underline on hover */
+            background-color: #ccc;
+        }
+        .review-product {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px; /* Add rounded corners */
+        }
+
+        .review-product h2 {
+            margin-top: 0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .review-product ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .review-product li {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: #fff; /* Add white background to each review */
+            border-radius: 10px; /* Add rounded corners to each review */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow to each review */
+        }
+
+        .review-product li:last-child {
+            border-bottom: none;
+        }
+
+        .review-product p {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .review-product strong {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .review-product.rating {
+            font-size: 18px;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .review-product.review-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .review-product.review-content {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .review-product.seller-response {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .review-product.seller-response::before {
+            content: "Seller's Response: ";
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<header>
+    <div class="logo">
+        <p>MyUniform.com</p>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/MyUnifoorm/">HOME</a></li>
+            <li><a href="/MyUnifoorm/product">PRODUCT</a></li>
+
+            
+        </ul>
+    </nav>
+</header>   
+<body>
+    <div class="review-product">
+        {% if reviews %}
+        <h2>REVIEWS FOR {{product.ProductName}}</h2>
+        <ul>
+            {% for review in reviews %}
+                <li>
+                    <strong><p>From : {{ review.Email.Name }}</p></strong>
+                    <p>Comment: {{ review.Comment }}</p>
+                    <p>Quantity : {{review.OrderID.Qty}}</p>
+                    <p>Posted on: {{ review.ReviewDate }}</p>
+                    <div class="rating">
+                        {{ review.Rating }} ⭐⭐⭐⭐⭐
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews available.</p>
+    {% endif %}
+</div>
+</body>
+</html>

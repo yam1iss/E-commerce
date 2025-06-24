@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+
+    <style>
+            body {
+                margin: 0;
+                padding: 0;
+
+            }
+        header {
+            background-color: #6d0505;
+            color: #fff;
+            padding: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
+            position: sticky; /* Make header sticky */
+            top: 0; /* Stick to the top */
+            z-index: 1000; /* Ensure it stays on top */
+        }
+
+        .logo {
+            font-size: 30px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 600;
+            margin-left: 2%;
+        }
+
+        nav {
+            margin-left: auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav li {
+            margin-right: 20px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 600;
+            position: relative;
+            padding: 5px 0; /* Added padding for better click area */
+        }
+
+        nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ccc;
+            transition: width .3s;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        nav a:hover::after {
+            width: 100%; /* Animate underline on hover */
+        }
+        .product-container {
+            margin: 20px;
+            margin-top: 20px;
+            padding-top: 30px;
+            padding: 20px;
+            padding-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 75%; /* Changed from 25% to 100% to make it full width */
+            display: inline-block;
+        }
+
+        .product-container img {
+            width: 100%;
+            height: auto;
+            max-width: 80%; /* Changed from 250px to 100% to make it responsive */
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 15px 15px 15px 15px;
+        }
+
+        .container{
+            padding:50px
+        }
+        .col-md-3 {
+            width: 25%; /* Changed from 33.33% to 25% to make it 4 columns */
+        }
+
+        .product-info {
+            padding: 10px;
+            font-family: 'Lato', sans-serif; /* Added font family */
+
+            }
+
+        .product-info h2 {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            }
+
+        .product-info p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+            }
+
+        .product-container a.btn {
+            background-color: #830f0f; /* Changed to red */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Added transition effect */
+            text-decoration: none;
+            }
+
+        .product-container a.btn:hover {
+            background-color: #5e0c0c; /* Changed to a slightly darker shade of red on hover */
+            }
+
+        .product-container a.btn:focus {
+            box-shadow: 0 0 0 2px #1e0101; /* Added focus effect */
+            }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <p>MyUniform.com</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/MyUnifoorm/">HOME</a></li>
+                <li><a href="/MyUnifoorm/product/orderhistory/">MY ORDER</a></li>
+            </ul>
+        </nav>
+    </header>
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-3">
+                <div class="product-container">
+                    <img src="{{ product.ProdImg.url }}" alt="{{ product.ProductName }}">
+                    <h2>{{ product.ProductName }}</h2>
+                    <p>Price: RM {{ product.Price|floatformat:2  }}</p>
+                    <p>Quantity: {{ product.Quantity }}</p>
+                    <a href="{% url 'order' product.ProductID %}" class="btn btn-primary">Buy Now</a>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:4 %}
+                </div><div class="row">
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

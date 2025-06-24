@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #6d0505;
+            color: #fff;
+            padding: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 30px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 600;
+            margin-left: 2%;
+        }
+
+        nav {
+            margin-left: auto;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav li {
+            margin-right: 20px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: 600;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ccc;
+            transition: width .3s;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+            background-color: #ccc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            padding-bottom: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 1%;
+        }
+
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .product-image {
+            flex: 1;
+            text-align: center;
+            padding-top: 32px;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-info {
+            flex: 2;
+            padding: 20px;
+        }
+
+        .product-info p {
+            margin: 10px 0;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .input-group button {
+            background-color: #68040481;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .input-group button:hover {
+            background-color: #9c0606;
+        }
+
+        .input-group input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 0 5px;
+        }
+
+        .btn-primary {
+            background-color: #1477b1;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <p>MyUniform.com</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/MyUnifoorm/">HOME</a></li>
+                <li><a href="/MyUnifoorm/product/">PRODUCT</a></li>
+                <li><a href="/MyUnifoorm/product/orderhistory">MY ORDER</a></li>
+            </ul>
+        </nav>
+    </header>  
+    <div class="container">
+        <div class="product-details">
+            <div class="product-image">
+                <img src="{{ product.ProdImg.url }}" alt="{{ product.ProductName }}">
+            </div>
+            <div class="product-info">
+                <p style="font-size: larger;"<strong>{{ product.ProductName }}</strong></p>
+                <p>Description: {{ product.Description }}</p>
+                <p>Material: {{ product.Material }}</p>
+                <p>Price: RM {{ product.Price|floatformat:2 }}</p>
+                <p>Stock: {{ product.Quantity }}</p>
+                <p>Size: {{ product.Size }}</p>
+                <p>Material: {{ product.Material }}</p>
+                <p>Color: {{ product.Color }}</p>
+                <p>Brand: {{ product.Brand }}</p>
+                <a href="{% url 'review' product_id=product.ProductID %}">Click here for product review</a>
+                <br><br>
+                <form action="{% url 'order' product.ProductID %}" method="post">
+                    {% csrf_token %}
+                    <label for="quantity">Select Quantity:</label>
+                    <div class="input-group">
+                        <button class="btn btn-secondary" type="button" id="minus-btn">-</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.Quantity }}">
+                        <button class="btn btn-secondary" type="button" id="plus-btn">+</button>
+                        <button type="submit" class="btn-primary" id="place-order-btn">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            var maxQuantity = {{ product.Quantity }} ;// Pass the product.Quantity value from your backend
+            var price = {{ product.Price }}; // Pass the product.Price value from your backend
+            $('#plus-btn').click(function() {
+                var currentValue = parseInt($('#quantity').val());
+                if (!isNaN(currentValue) && currentValue < maxQuantity) {
+                    $('#quantity').val(currentValue + 1);
+                }
+            });
+            $('#minus-btn').click(function() {
+                var currentValue = parseInt($('#quantity').val());
+                if (!isNaN(currentValue) && currentValue > 1) {
+                    $('#quantity').val(currentValue - 1);
+                }
+            });
+            $('#place-order-btn').click(function(event) {
+                var quantity = parseInt($('#quantity').val());
+                var totalAmount = quantity * price;
+                $('#order-success-message').text('Your order has been placed successfully!');
+                $('#total-amount-text').text('Total Amount: ' + totalAmount.toFixed(2));
+                $('#totalAmountModal').modal('show');
+            });
+        });
+    </script>
+</body>
+</html>
